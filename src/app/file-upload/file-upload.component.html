@@ -1,0 +1,12 @@
+<input
+  #fileInput
+  type="file"
+  [hidden]="true"
+  data-target="file-uploader"
+  (change)="onFile($event)"
+/>
+
+<div>
+  <input type="text" (click)="fileInput.click()" />
+  <button (click)="fileInput.click()">upload</button>
+</div>
