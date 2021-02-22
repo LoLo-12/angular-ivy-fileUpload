@@ -9,18 +9,31 @@ import * as XLSX from "xlsx";
   styleUrls: ["./file-upload.component.css"]
 })
 export class FileUploadComponent implements OnInit {
-  @Output() fileTypeEvent = new EventEmitter<string>();
+  @Output() fileTypeEvent = new EventEmitter<DocumentContent>();
   constructor() {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.fileTypeEvent.emit({
+      fileType: "",
+      fileContent: ""
+    });
+  }
 
   onFile(event) {
     const file = event.target.files[0];
     const type = event.target.files[0].type;
-    this.fileTypeEvent.emit(type);
     this.convertWord(file).then(fileText => {
-      console.log(fileText);
+      this.fileTypeEvent.emit({
+        fileType: type,
+        fileContent: fileText
+      });
     });
+  }
+
+  private checkFileType(type, file) {
+    if (type.includes("excel")) {
+      return this.convertText(file);
+    }
   }
 
   // 轉換成 base64
@@ -40,7 +53,7 @@ export class FileUploadComponent implements OnInit {
     });
   }
 
-  // 讀取 txt
+  // 讀取 .txt
   convertText(file) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -56,7 +69,7 @@ export class FileUploadComponent implements OnInit {
     });
   }
 
-  // 讀取 excel
+  // 讀取 .xls
   convertExcel(file) {
     return new Observable(ob => {
       const reader = new FileReader();
@@ -75,7 +88,7 @@ export class FileUploadComponent implements OnInit {
     });
   }
 
-  // 讀取 word
+  // 讀取 .doc
   convertWord(file) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -89,7 +102,8 @@ export class FileUploadComponent implements OnInit {
       const start = 0;
       const stop = file.size - 1;
       const blob = file.slice(start, stop + 1);
-      reader.readAsBinaryString(file);
+      // reader.readAsBinaryString(file);
+      reader.readAsText(file, "big5");
     });
   }
 }
@@ -97,4 +111,9 @@ export class FileUploadComponent implements OnInit {
 export interface ExcelSheetDto {
   keys: string[];
   data: any[];
+}
+
+export interface DocumentContent {
+  fileType: string;
+  fileContent: any;
 }

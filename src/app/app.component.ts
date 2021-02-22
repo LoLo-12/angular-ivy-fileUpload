@@ -1,4 +1,5 @@
 import { Component, Input, VERSION } from "@angular/core";
+import { DocumentContent } from "./file-upload/file-upload.component";
 
 @Component({
   selector: "my-app",
@@ -6,5 +7,5 @@ import { Component, Input, VERSION } from "@angular/core";
   styleUrls: ["./app.component.css"]
 })
 export class AppComponent {
-  @Input() fileType: String;
+  @Input() fileType: DocumentContent;
 }
