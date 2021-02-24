@@ -99,7 +99,8 @@ export class FileUploadComponent implements OnInit {
       reader.onerror = () => {
         reject(reader.error);
       };
-      reader.readAsBinaryString(file);
+      reader.readAsDataURL(file);
+      // reader.readAsBinaryString(file);
       // reader.readAsText(file, "big5");
     });
   }
