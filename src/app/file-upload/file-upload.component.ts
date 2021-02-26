@@ -36,7 +36,15 @@ export class FileUploadComponent implements OnInit {
           fileType: type,
           fileContent: fileText
         });
-        console.log(fileText);
+      });
+    }
+
+    if (type.includes("word")) {
+      this.convertFile(file).then(fileText => {
+        this.fileTypeEvent.emit({
+          fileType: type,
+          fileContent: fileText
+        });
       });
     }
   }
