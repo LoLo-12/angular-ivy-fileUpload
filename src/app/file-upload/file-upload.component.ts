@@ -19,20 +19,25 @@ export class FileUploadComponent implements OnInit {
     });
   }
 
-  onFile(event) {
+  uploadFile(event) {
     const file = event.target.files[0];
     const type = event.target.files[0].type;
-    this.convertWord(file).then(fileText => {
-      this.fileTypeEvent.emit({
-        fileType: type,
-        fileContent: fileText
+    if (type.includes("text")) {
+      this.convertText(file).then(fileText => {
+        this.fileTypeEvent.emit({
+          fileType: type,
+          fileContent: fileText
+        });
       });
-    });
-  }
-
-  private checkFileType(type, file) {
+    }
     if (type.includes("excel")) {
-      return this.convertText(file);
+      this.convertExcel(file).subscribe(fileText => {
+        this.fileTypeEvent.emit({
+          fileType: type,
+          fileContent: fileText
+        });
+        console.log(fileText);
+      });
     }
   }
 
@@ -85,23 +90,8 @@ export class FileUploadComponent implements OnInit {
       reader.onerror = () => {
         ob.error(reader.error);
       };
-    });
-  }
 
-  // 讀取 .doc
-  convertWord(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        resolve(reader.result);
-      };
-
-      reader.onerror = () => {
-        reject(reader.error);
-      };
-      reader.readAsDataURL(file);
-      // reader.readAsBinaryString(file);
-      // reader.readAsText(file, "big5");
+      reader.readAsBinaryString(file);
     });
   }
 }
